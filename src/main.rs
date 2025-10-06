@@ -1,5 +1,6 @@
 fn main() {
 use std::io;
+use std::io::Read;
 
 let mut input = String::new();
 println!("Enter BF code: ");
@@ -9,8 +10,6 @@ match io::stdin().read_line(&mut input) {
         let mut pointer: usize = 0;
         input = input.to_string().replace("\n", "");
         let m = n - 2;
-        println!("{m} bytes read");
-        println!("{input}");
 
         let mut reading: usize = 0;
         while reading < m {
@@ -21,7 +20,14 @@ match io::stdin().read_line(&mut input) {
                 Some('+') => arr[pointer] = arr[pointer].wrapping_add(1),
                 Some('-') => arr[pointer] = arr[pointer].wrapping_sub(1),
                 Some('.') => println!("{}", arr[pointer] as char),
-                Some(',') => println!("{}", "no"),
+                Some(',') => {
+                    println!("input something: ");
+                    let mut buf = [0];
+                    match io::stdin().read_exact(&mut buf) {
+                        Ok(_) => arr[pointer] = buf[0]
+                        Err(error) => println!("error: {error}")
+                    }
+                },
                 Some('[') => {
                     if arr[pointer] == 0 {
                         let mut leftwin: i32 = 1;
